@@ -19,12 +19,16 @@ def url(request):
 def pytest_addoption(parser):
     parser.addoption("--browser", default="chrome", help="Browser to run tests")
     parser.addoption("--url", default="http://localhost:8081", help="Opencart URL")
+    parser.addoption("--bv")
+    parser.addoption("--executor")
 
 
 @pytest.fixture
 def browser(request):
     browser = request.config.getoption("--browser")
     url = request.config.getoption("--url")
+    bv = request.config.getoption("--bv")
+    executor = request.config.getoption("--executor")
 
     if browser == "chrome":
         driver = webdriver.Chrome(service=ChromeService())
