@@ -1,46 +1,70 @@
 import json
 import logging
+import os
+import random
+import time
 
 import allure
 import pytest
-from selenium.webdriver.firefox.service import Service as FirefoxService
-from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium import webdriver
 
 logging.basicConfig(level=logging.INFO)
 mylogger = logging.getLogger()
 
 
-@pytest.fixture(scope="session")
-def url(request):
-    return request.config.getoption("--url")
-
-
 def pytest_addoption(parser):
-    parser.addoption("--browser", default="chrome", help="Browser to run tests")
+    parser.addoption("--browser", default="chrome", help="Browser to run tests", choices=["chrome", "firefox"])
     parser.addoption("--url", default="http://localhost:8081", help="Opencart URL")
-    parser.addoption("--bv")
-    parser.addoption("--executor")
+    parser.addoption("--bv", default="117.0")
+    parser.addoption("--executor", default="local")
+    parser.addoption("--vnc", default=False)
+    parser.addoption("--logs", default=False)
 
 
 @pytest.fixture
 def browser(request):
     browser = request.config.getoption("--browser")
-    url = request.config.getoption("--url")
-    bv = request.config.getoption("--bv")
     executor = request.config.getoption("--executor")
+    url = request.config.getoption("--url")
+    vnc = request.config.getoption("--vnc")
+    version = request.config.getoption("--bv")
+    logs = request.config.getoption("--logs")
 
-    if browser == "chrome":
-        driver = webdriver.Chrome(service=ChromeService())
-    elif browser == "firefox":
-        driver = webdriver.Firefox(service=FirefoxService())
+    if executor == "local":
+        if browser == "chrome":
+            options = webdriver.ChromeOptions()
+            options.headless = True
+            driver = webdriver.Chrome(options=options)
+        elif browser == "firefox":
+            driver = webdriver.Firefox()
+        else:
+            raise Exception("Driver not supported")
     else:
-        raise ValueError(f'Driver {browser} not supported.')
+        if browser == "chrome":
+            options = ChromeOptions()
+        elif browser == "firefox":
+            options = FirefoxOptions()
 
-    request.addfinalizer(driver.close)
+        executor_url = f"http://{executor}:4444/wd/hub"
+        caps = {
+            "browserName": browser,
+            "browserVersion": version,
+            "selenoid:options": {
+                "enableVNC": vnc,
+                "enableLog": logs
+            }
+        }
+        for k, v in caps.items():
+            options.set_capability(k, v)
+
+        driver = webdriver.Remote(
+            command_executor=executor_url,
+            options=options,
+        )
 
     driver.maximize_window()
-    driver.get(url)
     driver.url = url
     driver.implicitly_wait(5)
 
@@ -49,4 +73,5 @@ def browser(request):
         body=json.dumps(driver.capabilities, indent=4),
         attachment_type=allure.attachment_type.JSON)
 
+    request.addfinalizer(driver.close)
     return driver

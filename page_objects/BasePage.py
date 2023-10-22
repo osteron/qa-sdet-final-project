@@ -24,12 +24,13 @@ class BasePage:
             index += 1
         self.driver.get_screenshot_as_file(f"screenshots/{index}.png")
 
-    @allure.step
+    @allure.step('Input text')
     def _input(self, element, value) -> None:
         self.click(element)
         element.clear()
         element.send_keys(value)
 
+    @allure.step('Waiting element {locator}')
     def element(self, locator: tuple) -> WebElement:
         try:
             return WebDriverWait(self.driver, 5).until(EC.visibility_of_element_located(locator))
@@ -43,6 +44,7 @@ class BasePage:
             self.save_screenshot()
             raise AssertionError(f'Не дождался видимости элемента {locator}')
 
+    @allure.step('Waiting not visible element {locator}')
     def not_visible_element(self, locator: tuple) -> bool:
         try:
             return WebDriverWait(self.driver, 2).until(EC.invisibility_of_element_located(locator))
@@ -56,10 +58,11 @@ class BasePage:
             self.save_screenshot()
             raise AssertionError(f'Элемент до сих пор виден {locator}')
 
-    @allure.step
+    @allure.step('Click button')
     def click(self, element) -> None:
         ActionChains(self.driver).move_to_element(element).pause(0.1).click().perform()
 
+    @allure.step('Waiting elements {locator}')
     def elements(self, locator: tuple) -> List[WebElement]:
         try:
             return WebDriverWait(self.driver, 5).until(EC.visibility_of_all_elements_located(locator))
@@ -73,15 +76,15 @@ class BasePage:
             self.save_screenshot()
             raise AssertionError(f'Не дождался видимости элементов {locator}')
 
-    @allure.step
+    @allure.step('Get text of element {locator}')
     def get_text_of_element(self, locator: tuple) -> AnyStr:
         return self.element(locator).text
 
-    @allure.step
+    @allure.step('Check title with {title}')
     def check_title_page(self, title: str) -> bool:
         return self.driver.title in title
 
-    @allure.step
+    @allure.step('Accept alert')
     def alert_accept(self) -> None:
         try:
             Alert(self.driver).accept()

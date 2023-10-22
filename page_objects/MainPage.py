@@ -27,7 +27,7 @@ class MainPage(BasePage):
         self.element(self.CART)
         self.element(self.MENU)
         self.element(self.SLIDESHOW)
-        assert len(self.elements(self.PRODUCT_LAYOUT)) == 3
+        assert len(self.elements(self.PRODUCT_LAYOUT)) == 4
         self.element(self.FOOTER)
 
     def switching_all_currencies(self):
