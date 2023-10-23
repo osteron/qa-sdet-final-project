@@ -11,6 +11,7 @@ __pycache__/
 build/
 allure-results/
 .idea/
+screenshots/
 develop-eggs/
 dist/
 downloads/
