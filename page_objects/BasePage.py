@@ -24,7 +24,7 @@ class BasePage:
             index += 1
         self.driver.get_screenshot_as_file(f"screenshots/{index}.png")
 
-    @allure.step('Input text')
+    @allure.step('Input text to {element}')
     def _input(self, element, value) -> None:
         self.click(element)
         element.clear()
@@ -58,7 +58,7 @@ class BasePage:
             self.save_screenshot()
             raise AssertionError(f'Элемент до сих пор виден {locator}')
 
-    @allure.step('Click button')
+    @allure.step('Click button {element}')
     def click(self, element) -> None:
         ActionChains(self.driver).move_to_element(element).pause(0.1).click().perform()
 
