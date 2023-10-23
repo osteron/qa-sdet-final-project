@@ -16,7 +16,7 @@ class CatalogPage(BasePage):
     def check_elements_on_page(self):
         assert self.check_title_page('Phones & PDAs')
         self.element(self.BREADCRUMB)
-        assert len(self.elements(self.PRODUCT_LAYOUT)) == 2
+        assert len(self.elements(self.PRODUCT_LAYOUT)) == 3, f'{len(self.elements(self.PRODUCT_LAYOUT))} != 2'
         self.element(self.LIST_GROUP)
-        assert len(self.elements(self.LIST_GROUP_ITEMS)) == 8
+        assert len(self.elements(self.LIST_GROUP_ITEMS)) == 8, f'{len(self.elements(self.LIST_GROUP_ITEMS))} != 8'
         self.element(self.CONTENT)
