@@ -6,7 +6,9 @@ class CatalogPage(BasePage):
     BREADCRUMB = (By.CLASS_NAME, 'breadcrumb')
     LIST_GROUP = (By.CLASS_NAME, 'list-group')
     LIST_GROUP_ITEMS = (By.CLASS_NAME, 'list-group-item')
-    CONTENT = (By.ID, 'content')
+    # Специально добавлен неверный ID для демонстрации ошибки
+    # CONTENT = (By.ID, 'content')
+    CONTENT = (By.ID, 'content1')
     PRODUCT_LAYOUT = (By.CLASS_NAME, 'product-layout')
 
     def __init__(self, driver):

@@ -1,9 +1,5 @@
 import json
 import logging
-import os
-import random
-import time
-
 import allure
 import pytest
 from selenium.webdriver.chrome.options import Options as ChromeOptions
