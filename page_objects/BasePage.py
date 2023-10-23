@@ -58,7 +58,7 @@ class BasePage:
             self.save_screenshot()
             raise AssertionError(f'Элемент до сих пор виден {locator}')
 
-    @allure.step('Click button {element}')
+    @allure.step('Click button')
     def click(self, element) -> None:
         ActionChains(self.driver).move_to_element(element).pause(0.1).click().perform()
 
